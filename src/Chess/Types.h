@@ -1,0 +1,9 @@
+#define PAWN 0x0
+#define KNIGHT 0x1
+#define BISHOP 0x2
+#define ROOK 0x3 
+#define QUEEN 0x4 
+#define KING 0x5 
+#define EMPTY 0x6 
+#define WHITE 0x0
+#define BLACK 0x1
