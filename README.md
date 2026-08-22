@@ -1,2 +1,3 @@
 No AI was used for generating the code
-Docs: chessprogramming.org
+
+Docs: https://chessprogramming.org
