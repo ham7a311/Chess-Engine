@@ -5,6 +5,7 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
 
     // next move is current square number + 8 and -8 for white for going one square up and +16 and -16 for white for two squares up(first move only)
     if(pos.sideToMove == WHITE) {
+
         // calc destination, check if not empty and add to vector
         int oneSquare = square - 8;
         int twoSquare = square - 16;
@@ -29,8 +30,39 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
             v.push_back(m);
             
         }
+
+        // capture logic
+        // white can only capture square - 7 and square - 9 , ONLY and ONLY IF there is a black piece on these squares
+        // add capture to the flags when move is done
+
+        int file = square % 8;  // this helps us to check if pawn is on the edge or not(if on edge only 1 capture is possible not 2 as usual)
+
+        if(file > 0) {
+
+            int capture = square - 9;
+            if(pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
+                Move m;
+                m.from = square;
+                m.to = capture;
+                m.flags = CAPTURE;
+                v.push_back(m);
+            }
+
+        }
         
-    }else {
+        if(file < 7) {
+
+            int capture = square - 7;
+            if(pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
+                Move m;
+                m.from = square;
+                m.to = capture;
+                m.flags = CAPTURE;
+                v.push_back(m);
+            }
+        }
+        
+    } else {
         // calc destination, check if not empty and add to vector
         int oneSquare = square + 8;
         int twoSquare = square + 16;
@@ -53,6 +85,37 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
             m.to = twoSquare;
             v.push_back(m);
             
+        }
+
+         // capture logic
+        // white can only capture square - 7 and square - 9 , ONLY and ONLY IF there is a black piece on these squares
+        // add capture to the flags when move is done
+
+        int file = square % 8;  // this helps us to check if pawn is on the edge or not(if on edge only 1 capture is possible not 2 as usual)
+
+        if(file > 0) {
+
+            int capture = square + 7;
+            if(pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
+                Move m;
+                m.from = square;
+                m.to = capture;
+                m.flags = CAPTURE;
+                v.push_back(m);
+            }
+
+        }
+        
+        if(file < 7) {
+
+            int capture = square + 9;
+            if(pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
+                Move m;
+                m.from = square;
+                m.to = capture;
+                m.flags = CAPTURE;
+                v.push_back(m);
+            }
         }
         
     }

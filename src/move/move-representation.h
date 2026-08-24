@@ -1,9 +1,9 @@
 #include "../Chess/Types.h"
 
-const int Capture = 1;
-const int Promotion = 2;
-const int EN_Passant = 4;
-const int Castling = 8;
+const int CAPTURE = 1;
+const int PROMOTION = 2;
+const int EN_PASSANT = 4;
+const int CASTLING = 8;
 
 struct Move {
     int from;
