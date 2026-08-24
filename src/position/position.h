@@ -1,3 +1,4 @@
+#pragma once
 #include "../Chess/Types.h"
 
 const int WHITE_KINGSIDE  = 1;

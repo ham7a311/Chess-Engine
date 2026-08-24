@@ -1,5 +1,34 @@
 #include "move-generator.h"
 
+void makeMove(Position& pos, const Move& m) {
+    int movingPiece = pos.piece[m.from];
+    int movingColor = pos.color[m.from];
+
+    pos.enPassantSquare = 64;
+
+    if(m.flags & EN_PASSANT) {
+        
+    }
+
+    // move pawn to m.to
+
+    if(m.flags & PROMOTION) {
+        movingPiece = pos.piece[m.promotionPiece];
+        movingColor = pos.color[m.promotionPiece];
+    }
+
+    // pos.halfMoveClock here
+
+    if(pos.sideToMove == BLACK) {
+        pos.fullmoveNumber++;
+    }
+
+    pos.sideToMove = !pos.sideToMove; // switch sides
+
+}
+
+
+
 std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
     std::vector<Move> v;
 
