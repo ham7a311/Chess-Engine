@@ -13,11 +13,44 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
         // one square moves
 
         if(0 <= oneSquare && oneSquare <= 63 && pos.piece[oneSquare] == EMPTY) {
-            
-            Move m;
-            m.from = square;
-            m.to = oneSquare;
-            v.push_back(m);
+            // promotion logic
+        // for white, if a pawn is on squares 8-15 means the white pawn is one move away from promotion, 0-7 are promotion squares
+            if(0 <= oneSquare && oneSquare <= 7) {
+                // 4 possible promotions, create 4 Move objects
+                Move m;
+                m.from = square;
+                m.to = oneSquare;
+                m.flags = PROMOTION;
+                m.promotionPiece = QUEEN;
+                v.push_back(m);
+
+                Move m2;
+                m2.from = square;
+                m2.to = oneSquare;
+                m2.flags = PROMOTION;
+                m2.promotionPiece = ROOK;
+                v.push_back(m2);
+
+                Move m3;
+                m3.from = square;
+                m3.to = oneSquare;
+                m3.flags = PROMOTION;
+                m3.promotionPiece = BISHOP;
+                v.push_back(m3);
+
+                Move m4;
+                m4.from = square;
+                m4.to = oneSquare;
+                m4.flags = PROMOTION;
+                m4.promotionPiece = KNIGHT;
+                v.push_back(m4);
+
+            } else {
+                Move m;
+                m.from = square;
+                m.to = oneSquare;
+                v.push_back(m);
+            }
             
         }
 
@@ -61,6 +94,7 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
                 v.push_back(m);
             }
         }
+
         
     } else {
         // calc destination, check if not empty and add to vector
@@ -68,13 +102,46 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
         int twoSquare = square + 16;
 
         if(0 <= oneSquare && oneSquare <= 63 && pos.piece[oneSquare] == EMPTY) {
+            // promotion logic
+            // for black, if a pawn is on squares 48-55 means the white pawn is one move away from promotion, 56-63 are promotion squares
+            if(56 <= oneSquare && oneSquare <= 63) {
+                
+                 // 4 possible promotions, create 4 Move objects
+                 Move m;
+                 m.from = square;
+                 m.to = oneSquare;
+                 m.flags = PROMOTION;
+                 m.promotionPiece = QUEEN;
+                 v.push_back(m);
+ 
+                 Move m2;
+                 m2.from = square;
+                 m2.to = oneSquare;
+                 m2.flags = PROMOTION;
+                 m2.promotionPiece = ROOK;
+                 v.push_back(m2);
+ 
+                 Move m3;
+                 m3.from = square;
+                 m3.to = oneSquare;
+                 m3.flags = PROMOTION;
+                 m3.promotionPiece = BISHOP;
+                 v.push_back(m3);
+ 
+                 Move m4;
+                 m4.from = square;
+                 m4.to = oneSquare;
+                 m4.flags = PROMOTION;
+                 m4.promotionPiece = KNIGHT;
+                 v.push_back(m4);
 
-            Move m;
-            m.from = square;
-            m.to = oneSquare;
-            v.push_back(m);
-
-
+            } else {
+                Move m;
+                m.from = square;
+                m.to = oneSquare;
+                v.push_back(m);
+            }
+            
         }
 
          // two square moves(starting position only: 8-15)
