@@ -73,12 +73,47 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
         if(file > 0) {
 
             int capture = square - 9;
-            if(pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
-                Move m;
-                m.from = square;
-                m.to = capture;
-                m.flags = CAPTURE;
-                v.push_back(m);
+            if(0 <= capture && capture <= 63 && pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
+                if(0 <= capture && capture <= 7){
+
+                    // 4 possible promotions, create 4 Move objects
+                    Move m;
+                    m.from = square;
+                    m.to = capture;
+                    m.flags = PROMOTION | CAPTURE;
+                    m.promotionPiece = QUEEN;
+                    v.push_back(m);
+
+                    Move m2;
+                    m2.from = square;
+                    m2.to = capture;
+                    m2.flags = PROMOTION | CAPTURE;
+                    m2.promotionPiece = ROOK;
+                    v.push_back(m2);
+
+                    Move m3;
+                    m3.from = square;
+                    m3.to = capture;
+                    m3.flags = PROMOTION | CAPTURE;
+                    m3.promotionPiece = BISHOP;
+                    v.push_back(m3);
+
+                    Move m4;
+                    m4.from = square;
+                    m4.to = capture;
+                    m4.flags = PROMOTION | CAPTURE;
+                    m4.promotionPiece = KNIGHT;
+                    v.push_back(m4);
+
+                } else {
+
+                    Move m;
+                    m.from = square;
+                    m.to = capture;
+                    m.flags = CAPTURE;
+                    v.push_back(m);
+
+                }
             }
 
         }
@@ -86,12 +121,47 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
         if(file < 7) {
 
             int capture = square - 7;
-            if(pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
+            if(0 <= capture && capture <= 63 && pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
+
+                if(0 <= capture && capture <= 7){
+                     // 4 possible promotions, create 4 Move objects
+                     Move m;
+                     m.from = square;
+                     m.to = capture;
+                     m.flags = PROMOTION | CAPTURE;
+                     m.promotionPiece = QUEEN;
+                     v.push_back(m);
+ 
+                     Move m2;
+                     m2.from = square;
+                     m2.to = capture;
+                     m2.flags = PROMOTION | CAPTURE;
+                     m2.promotionPiece = ROOK;
+                     v.push_back(m2);
+ 
+                     Move m3;
+                     m3.from = square;
+                     m3.to = capture;
+                     m3.flags = PROMOTION | CAPTURE;
+                     m3.promotionPiece = BISHOP;
+                     v.push_back(m3);
+ 
+                     Move m4;
+                     m4.from = square;
+                     m4.to = capture;
+                     m4.flags = PROMOTION | CAPTURE;
+                     m4.promotionPiece = KNIGHT;
+                     v.push_back(m4);
+                } else {
+
+                
                 Move m;
                 m.from = square;
                 m.to = capture;
                 m.flags = CAPTURE;
                 v.push_back(m);
+                }
+
             }
         }
 
@@ -163,12 +233,47 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
         if(file > 0) {
 
             int capture = square + 7;
-            if(pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
-                Move m;
-                m.from = square;
-                m.to = capture;
-                m.flags = CAPTURE;
-                v.push_back(m);
+            if(0 <= capture && capture <= 63 && pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
+                if(56 <= capture && capture <= 63){
+
+                    // 4 possible promotions, create 4 Move objects
+                    Move m;
+                    m.from = square;
+                    m.to = capture;
+                    m.flags = PROMOTION | CAPTURE;
+                    m.promotionPiece = QUEEN;
+                    v.push_back(m);
+
+                    Move m2;
+                    m2.from = square;
+                    m2.to = capture;
+                    m2.flags = PROMOTION | CAPTURE;
+                    m2.promotionPiece = ROOK;
+                    v.push_back(m2);
+
+                    Move m3;
+                    m3.from = square;
+                    m3.to = capture;
+                    m3.flags = PROMOTION | CAPTURE;
+                    m3.promotionPiece = BISHOP;
+                    v.push_back(m3);
+
+                    Move m4;
+                    m4.from = square;
+                    m4.to = capture;
+                    m4.flags = PROMOTION | CAPTURE;
+                    m4.promotionPiece = KNIGHT;
+                    v.push_back(m4);
+
+                } else {
+
+                    Move m;
+                    m.from = square;
+                    m.to = capture;
+                    m.flags = CAPTURE;
+                    v.push_back(m);
+
+                }
             }
 
         }
@@ -176,12 +281,47 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
         if(file < 7) {
 
             int capture = square + 9;
-            if(pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
-                Move m;
-                m.from = square;
-                m.to = capture;
-                m.flags = CAPTURE;
-                v.push_back(m);
+            if(0 <= capture && capture <= 63 && pos.color[capture] != pos.sideToMove && pos.piece[capture] != EMPTY) {
+                if(56 <= capture && capture <= 63){
+
+                    // 4 possible promotions, create 4 Move objects
+                    Move m;
+                    m.from = square;
+                    m.to = capture;
+                    m.flags = PROMOTION | CAPTURE;
+                    m.promotionPiece = QUEEN;
+                    v.push_back(m);
+
+                    Move m2;
+                    m2.from = square;
+                    m2.to = capture;
+                    m2.flags = PROMOTION | CAPTURE;
+                    m2.promotionPiece = ROOK;
+                    v.push_back(m2);
+
+                    Move m3;
+                    m3.from = square;
+                    m3.to = capture;
+                    m3.flags = PROMOTION | CAPTURE;
+                    m3.promotionPiece = BISHOP;
+                    v.push_back(m3);
+
+                    Move m4;
+                    m4.from = square;
+                    m4.to = capture;
+                    m4.flags = PROMOTION | CAPTURE;
+                    m4.promotionPiece = KNIGHT;
+                    v.push_back(m4);
+
+                } else {
+
+                    Move m;
+                    m.from = square;
+                    m.to = capture;
+                    m.flags = CAPTURE;
+                    v.push_back(m);
+
+                }
             }
         }
         
