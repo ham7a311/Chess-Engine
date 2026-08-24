@@ -114,6 +114,27 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
                     v.push_back(m);
 
                 }
+            } else {
+                 // implement en passant logic, capture square must be empty this time
+                // lets say white is in 25, black does a a two move square to 24(becomes next to white)
+                //  now white can capture using en passant , white will become on square 16
+                //  so basically for en passant we should combine two square and capture logic
+                // en passant is possible with capture ONLY, so only flag possible is flags = EN_PASSANT | CAPTURE
+
+                if(  pos.piece[square - 1] == PAWN &&
+                    pos.color[square - 1] == BLACK &&
+                    pos.enPassantSquare == capture &&
+                    pos.piece[capture] == EMPTY
+                ) {
+
+                    Move m;
+                    m.from = square;
+                    m.to = capture;
+                    m.flags = EN_PASSANT | CAPTURE;
+                    v.push_back(m);
+
+                }
+
             }
 
         }
@@ -162,6 +183,26 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
                 v.push_back(m);
                 }
 
+            } else {
+                // implement en passant logic
+                // lets say white is in 25, black does a a two move square to 24(becomes next to white)
+                //  now white can capture using en passant , white will become on square 16
+                //  so basically for en passant we should combine two square and capture logic
+                // en passant is possible with capture ONLY, so only flag possible is flags = EN_PASSANT | CAPTURE
+
+                if(  pos.piece[square + 1] == PAWN &&
+                    pos.color[square + 1] == BLACK &&
+                    pos.enPassantSquare == capture &&
+                    pos.piece[capture] == EMPTY
+                ) {
+
+                    Move m;
+                    m.from = square;
+                    m.to = capture;
+                    m.flags = EN_PASSANT | CAPTURE;
+                    v.push_back(m);
+                    
+                }
             }
         }
 
@@ -274,6 +315,26 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
                     v.push_back(m);
 
                 }
+            }else {
+                // implement en passant logic
+                // lets say white is in 25, black does a a two move square to 24(becomes next to white)
+                //  now white can capture using en passant , white will become on square 16
+                //  so basically for en passant we should combine two square and capture logic
+                // en passant is possible with capture ONLY, so only flag possible is flags = EN_PASSANT | CAPTURE
+
+                if(  pos.piece[square - 1] == PAWN &&
+                    pos.color[square - 1] == WHITE &&
+                    pos.enPassantSquare == capture &&
+                    pos.piece[capture] == EMPTY
+                ) {
+
+                    Move m;
+                    m.from = square;
+                    m.to = capture;
+                    m.flags = EN_PASSANT | CAPTURE;
+                    v.push_back(m);
+                    
+                }
             }
 
         }
@@ -322,6 +383,26 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
                     v.push_back(m);
 
                 }
+            }else {
+                // implement en passant logic
+                // lets say white is in 25, black does a a two move square to 24(becomes next to white)
+                //  now white can capture using en passant , white will become on square 16
+                //  so basically for en passant we should combine two square and capture logic
+                // en passant is possible with capture ONLY, so only flag possible is flags = EN_PASSANT | CAPTURE
+
+                if(  pos.piece[square + 1] == PAWN &&
+                    pos.color[square + 1] == WHITE &&
+                    pos.enPassantSquare == capture &&
+                    pos.piece[capture] == EMPTY
+                ) {
+
+                    Move m;
+                    m.from = square;
+                    m.to = capture;
+                    m.flags = EN_PASSANT | CAPTURE;
+                    v.push_back(m);
+                    
+                }
             }
         }
         
@@ -354,12 +435,12 @@ std::vector<Move> MoveGenerator::generateMoves(Position& pos) {
                     break;
                 }
                 case BISHOP: {
-                    auto bishopMoves =generateBishopMoves(pos, i);
+                    auto bishopMoves = generateBishopMoves(pos, i);
                     v.insert(v.end(), bishopMoves.begin(), bishopMoves.end());
                     break;
                 }
                 case ROOK: {
-                    auto rookMoves =generateRookMoves(pos, i);
+                    auto rookMoves = generateRookMoves(pos, i);
                     v.insert(v.end(), rookMoves.begin(), rookMoves.end());
                     break;
                 }
@@ -369,7 +450,7 @@ std::vector<Move> MoveGenerator::generateMoves(Position& pos) {
                     break;
                 }
                 case KING: {
-                   auto kingMoves =  generateKingMoves(pos, i);
+                   auto kingMoves = generateKingMoves(pos, i);
                    v.insert(v.end(), kingMoves.begin(), kingMoves.end());
                     break;
                 }
