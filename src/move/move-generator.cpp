@@ -789,7 +789,7 @@ std::vector<Move> MoveGenerator::generateKnightMoves(Position& pos, int square) 
             int destination = newRow * 8 + newCol;
 
             // If the destination is empty, the knight can move there.
-            if(pos.piece[destination] == EMPTY && pos.color[destination] != pos.sideToMove) {
+            if(pos.piece[destination] == EMPTY) {
 
                 // Create a normal (non-capturing) move.
                 Move m;
@@ -803,7 +803,7 @@ std::vector<Move> MoveGenerator::generateKnightMoves(Position& pos, int square) 
                 // Add the move to the list of generated moves.
                 v.push_back(m);
 
-            } else if(pos.piece[destination] != EMPTY && pos.color[destination] != pos.sideToMove) {
+            } else if(pos.piece[destination] != EMPTY) {
                 // If the destination contains an enemy piece,the knight can capture it.
                 Move m;
                 m.from = square;
@@ -818,7 +818,56 @@ std::vector<Move> MoveGenerator::generateKnightMoves(Position& pos, int square) 
     return v;
 }
 
+std::vector<Move> MoveGenerator::generateBishopMoves(Position& pos, int square) {
+    std::vector<Move> v;
+    int row = square / 8;
+    int col = square % 8;
 
+    std::vector<std::pair<int, int> > arr;
+    int newRow;
+    int newCol;
+
+    arr.push_back(std::make_pair(1, 1));
+    arr.push_back(std::make_pair(1, -1));
+    arr.push_back(std::make_pair(-1, 1));
+    arr.push_back(std::make_pair(-1, -1));
+
+    for(auto &[first, second]: arr) {
+        newRow = row + first;
+        newCol = col + second;
+
+        int destination = newRow * 8 + newCol;
+        while ((0 <= newRow && newRow <= 7) && (0 <= newCol && newCol <= 7)) {
+            
+                if (pos.piece[destination] == EMPTY) {
+            
+                    Move m;
+                    m.from = square;
+                    m.to = destination;
+                    v.push_back(m);
+            
+                } else {
+            
+                    if (pos.color[destination] != pos.sideToMove) {
+            
+                        Move m;
+                        m.from = square;
+                        m.to = destination;
+                        m.flags = CAPTURE;
+                        v.push_back(m);
+                    }
+            
+                    break;
+                }
+            
+                newRow += first;
+                newCol += second;
+        }
+    }
+
+    return v;
+            
+}
 
 
 std::vector<Move> MoveGenerator::generateMoves(Position& pos) {
