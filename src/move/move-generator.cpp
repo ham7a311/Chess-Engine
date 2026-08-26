@@ -870,6 +870,81 @@ std::vector<Move> MoveGenerator::generateBishopMoves(Position& pos, int square) 
 }
 
 
+std::vector<Move> MoveGenerator::generateRookMoves(Position& pos, int square) {
+
+    std::vector<Move> v;
+
+    int row = square / 8;
+    int col = square % 8;
+
+    std::vector<std::pair<int, int>> arr;
+
+    int newRow;
+    int newCol;
+
+    // Rook movement: down
+    arr.push_back(std::make_pair(1, 0));
+
+    // Rook movement: up
+    arr.push_back(std::make_pair(-1, 0));
+
+    // Rook movement: right
+    arr.push_back(std::make_pair(0, 1));
+
+    // Rook movement: left
+    arr.push_back(std::make_pair(0, -1));
+
+    // Check each of the 4 possible rook directions.
+    for (auto &[first, second] : arr) {
+
+        newRow = row + first;
+        newCol = col + second;
+
+        // Continue moving in this direction until we leave the board
+        // or encounter a piece.
+        while ((0 <= newRow && newRow <= 7) &&
+               (0 <= newCol && newCol <= 7)) {
+
+            int destination = newRow * 8 + newCol;
+
+            // Empty square: normal rook move.
+            if (pos.piece[destination] == EMPTY) {
+
+                Move m;
+
+                m.from = square;
+                m.to = destination;
+
+                v.push_back(m);
+
+            } else {
+
+                // Enemy piece: capture it.
+                if (pos.color[destination] != pos.sideToMove) {
+
+                    Move m;
+
+                    m.from = square;
+                    m.to = destination;
+                    m.flags = CAPTURE;
+
+                    v.push_back(m);
+                }
+
+                // Friendly or enemy piece both stop the rook.
+                break;
+            }
+
+            // Continue one more square in the same direction.
+            newRow += first;
+            newCol += second;
+        }
+    }
+
+    return v;
+}
+
+
 std::vector<Move> MoveGenerator::generateMoves(Position& pos) {
 
     
