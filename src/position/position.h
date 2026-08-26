@@ -40,3 +40,15 @@ struct Position {
 };
 
 
+// this is for the engine to determine the best moves
+struct UndoState {
+    int capturedPiece;
+    int capturedColor;
+    int capturedSquare;
+    int previousCastlingRights;
+    int previousEnPassantSquare;
+    int previousHalfMoveClock;
+    int previousFullMoveNumber;
+};
+
+

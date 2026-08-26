@@ -7,7 +7,8 @@
 class MoveGenerator {
     public: 
         std::vector<Move> generateMoves(Position&);
-        void makeMove(Position& pos, const Move& m);
+        void makeMove(Position& pos, const Move& m, UndoState& undo);
+        void unmakeMove(Position& pos, const Move& m);  // this is for the engine
     private:
         std::vector<Move> generatePawnMoves(Position&, int square);
         std::vector<Move> generateKnightMoves(Position&, int square);
