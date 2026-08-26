@@ -877,7 +877,7 @@ std::vector<Move> MoveGenerator::generateRookMoves(Position& pos, int square) {
     int row = square / 8;
     int col = square % 8;
 
-    std::vector<std::pair<int, int>> arr;
+    std::vector<std::pair<int, int> > arr;
 
     int newRow;
     int newCol;
