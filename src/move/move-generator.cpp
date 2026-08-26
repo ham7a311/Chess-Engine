@@ -902,8 +902,7 @@ std::vector<Move> MoveGenerator::generateRookMoves(Position& pos, int square) {
 
         // Continue moving in this direction until we leave the board
         // or encounter a piece.
-        while ((0 <= newRow && newRow <= 7) &&
-               (0 <= newCol && newCol <= 7)) {
+        while ((0 <= newRow && newRow <= 7) && (0 <= newCol && newCol <= 7)) {
 
             int destination = newRow * 8 + newCol;
 
@@ -936,6 +935,79 @@ std::vector<Move> MoveGenerator::generateRookMoves(Position& pos, int square) {
             }
 
             // Continue one more square in the same direction.
+            newRow += first;
+            newCol += second;
+        }
+    }
+
+    return v;
+}
+
+std::vector<Move> MoveGenerator::generateQueenMoves(Position& pos, int square) {
+
+    std::vector<Move> v;
+
+    // Convert the square index into row and column.
+    int row = square / 8;
+    int col = square % 8;
+
+    // Store all 8 directions the queen can move.
+    std::vector<std::pair<int, int> > arr;
+
+    // Rook directions.
+    arr.push_back(std::make_pair(1, 0));
+    arr.push_back(std::make_pair(-1, 0));
+    arr.push_back(std::make_pair(0, 1));
+    arr.push_back(std::make_pair(0, -1));
+
+    // Bishop directions.
+    arr.push_back(std::make_pair(1, 1));
+    arr.push_back(std::make_pair(1, -1));
+    arr.push_back(std::make_pair(-1, 1));
+    arr.push_back(std::make_pair(-1, -1));
+
+    // Check every direction.
+    for(auto &[first, second] : arr) {
+
+        // Start one square away from the queen.
+        int newRow = row + first;
+        int newCol = col + second;
+
+        // Keep moving in this direction until we leave the board
+        // or hit a piece.
+        while(0 <= newRow && newRow <= 7 && 0 <= newCol && newCol <= 7) {
+
+            int destination = newRow * 8 + newCol;
+
+            // Empty square: queen can continue moving.
+            if(pos.piece[destination] == EMPTY) {
+
+                Move m;
+
+                m.from = square;
+                m.to = destination;
+
+                v.push_back(m);
+
+            } else {
+
+                // Enemy piece: queen can capture it.
+                if(pos.color[destination] != pos.sideToMove) {
+
+                    Move m;
+
+                    m.from = square;
+                    m.to = destination;
+                    m.flags = CAPTURE;
+
+                    v.push_back(m);
+                }
+
+                // A piece blocks the queen in this direction.
+                break;
+            }
+
+            // Continue moving in the same direction.
             newRow += first;
             newCol += second;
         }
