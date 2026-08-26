@@ -226,8 +226,90 @@ void makeMove(Position& pos, const Move& m, UndoState& undo) {
 
 
 
-void unmakeMove(Position& pos, const Move& m) {
-    
+void unmakeMove(Position& pos, const Move& m, UndoState& undo) {
+    // Reverse makeMove() logic
+
+    pos.sideToMove = !pos.sideToMove;
+
+    pos.fullmoveNumber = undo.previousFullMoveNumber;
+    pos.halfmoveClock = undo.previousHalfMoveClock;
+    pos.castlingRights = undo.previousCastlingRights;
+    pos.enPassantSquare = undo.previousEnPassantSquare;
+
+    // The piece currently on 'to' is the piece that moved.
+    int movingPiece = pos.piece[m.to];
+    int movingColor = pos.color[m.to];
+
+    // Remove moving piece from destination.
+    pos.piece[m.to] = EMPTY;
+    pos.color[m.to] = EMPTY;
+
+    // If it was a promotion, restore the original pawn.
+    if (m.flags & PROMOTION) {
+        movingPiece = PAWN;
+    }
+
+    // Restore captured piece.
+    if (m.flags & CAPTURE) {
+        pos.piece[undo.capturedSquare] = undo.capturedPiece;
+        pos.color[undo.capturedSquare] = undo.capturedColor;
+    }
+
+    // Restore rook when undoing castling.
+    if (m.flags & CASTLING) {
+        // Black queenside: rook d8 -> a8
+        if (m.from == 4 && m.to == 2) {
+
+            // Black queenside: e8 -> c8
+            // Rook: a8 -> d8
+
+            pos.piece[0] = ROOK;
+            pos.color[0] = BLACK;
+
+            pos.piece[3] = EMPTY;
+            pos.color[3] = EMPTY;
+
+        } 
+        else if (m.from == 4 && m.to == 6) {
+
+            // Black kingside: e8 -> g8
+            // Rook: h8 -> f8
+
+            pos.piece[7] = ROOK;
+            pos.color[7] = BLACK;
+
+            pos.piece[5] = EMPTY;
+            pos.color[5] = EMPTY;
+
+        } 
+        else if (m.from == 60 && m.to == 58) {
+
+            // White queenside: e1 -> c1
+            // Rook: a1 -> d1
+
+            pos.piece[56] = ROOK;
+            pos.color[56] = WHITE;
+
+            pos.piece[59] = EMPTY;
+            pos.color[59] = EMPTY;
+
+        } 
+        else if (m.from == 60 && m.to == 62) {
+
+            // White kingside: e1 -> g1
+            // Rook: h1 -> f1
+
+            pos.piece[63] = ROOK;
+            pos.color[63] = WHITE;
+
+            pos.piece[61] = EMPTY;
+            pos.color[61] = EMPTY;
+        }
+    }
+
+    // Put moving piece back on its original square.
+    pos.piece[m.from] = movingPiece;
+    pos.color[m.from] = movingColor;
 }
 
 
