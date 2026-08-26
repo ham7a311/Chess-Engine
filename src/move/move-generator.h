@@ -2,6 +2,7 @@
 #include "../position/position.h"
 #include <vector>
 #include "move-representation.h"
+#include <cmath>
 
 class MoveGenerator {
     public: 

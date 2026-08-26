@@ -1,29 +1,160 @@
 #include "move-generator.h"
 
 void makeMove(Position& pos, const Move& m) {
+
     int movingPiece = pos.piece[m.from];
     int movingColor = pos.color[m.from];
+    const int originalMovingPiece = movingPiece; // for halfMoveCheck
 
     pos.enPassantSquare = 64;
 
-    if(m.flags & EN_PASSANT) {
-        
+    // Castling rights
+    // if KING moves, remove ALL Castling rights
+    // if a ROOK moves, remove the Castling right of THAT SIDE ONLY
+    // if ROOK is captured, the KING CAN"T CASTLE that side
+
+    if(movingPiece == KING) {
+        if(movingColor == WHITE) {
+            pos.castlingRights &= ~WHITE_KINGSIDE;
+            pos.castlingRights &= ~WHITE_QUEENSIDE;
+        }else {
+            pos.castlingRights &= ~BLACK_KINGSIDE;
+            pos.castlingRights &= ~BLACK_QUEENSIDE;
+        }
     }
 
-    // move pawn to m.to
+    if(movingPiece == ROOK) {
+        if(movingColor == WHITE) {
+            if(m.from == 56) {
+                pos.castlingRights &= ~WHITE_QUEENSIDE;
+            } else if(m.from == 63) {
+                pos.castlingRights &= ~WHITE_KINGSIDE;
+            }
+        }else {
+            if(m.from == 0) {
+                pos.castlingRights &= ~BLACK_QUEENSIDE;
+            } else if(m.from == 7) {
+                pos.castlingRights &= ~BLACK_KINGSIDE;
+            }
+        }
+    }
+
+    if(pos.piece[m.to] == ROOK && pos.color[m.to] == WHITE) {
+        if(m.to == 56) {
+            pos.castlingRights &= ~WHITE_QUEENSIDE;
+        }else if(m.to == 63) {
+            pos.castlingRights &= ~WHITE_KINGSIDE;
+        }
+    }
+
+    if(pos.piece[m.to] == ROOK && pos.color[m.to] == BLACK) {
+        if(m.to == 0) {
+            pos.castlingRights &= ~BLACK_QUEENSIDE;
+        }else if(m.to == 7) {
+            pos.castlingRights &= ~BLACK_KINGSIDE;
+        }
+    }
+
+    if(m.flags & EN_PASSANT) {
+
+        if(movingColor == WHITE) {
+            pos.piece[m.from + 8] = EMPTY;
+            pos.color[m.from + 8] = EMPTY;
+        } else {
+            pos.piece[m.from - 8] = EMPTY;
+            pos.color[m.from - 8] = EMPTY;
+        }
+
+    }
+
+    // move piece to m.to
+    // this should make m.from EMPTY, because the piece has made a move, hence the square it was on is now empty
+    pos.piece[m.from] = EMPTY;
+    pos.color[m.from] = EMPTY;
 
     if(m.flags & PROMOTION) {
-        movingPiece = pos.piece[m.promotionPiece];
-        movingColor = pos.color[m.promotionPiece];
+        movingPiece = m.promotionPiece;
+    }
+
+    if((m.flags & CASTLING) && movingPiece == KING) {
+        // determing which type of castling happened(queen side/king side), and change squares accordingly
+
+        // for each case: Rook's square becomes EMPTY, put the rook on the new square
+
+        // ROOK new square is m.to + 1 for BLACK, and m.to - 1 for WHITE
+        // KING new square is m.to ALWAYS
+        
+        if(m.from == 4 && m.to == 2) {
+            // rook becomes on square 3 and king on square 2
+
+            pos.piece[0] = EMPTY;
+            pos.color[0] = EMPTY;
+
+            pos.piece[m.to + 1] = ROOK;
+            pos.color[m.to + 1] = BLACK;
+
+            pos.piece[m.to] = KING;
+            pos.color[m.to] = BLACK;
+
+
+
+        }else if(m.from == 4 && m.to == 6) {
+            // rook becomes on square 5 and king on square 6
+
+            pos.piece[7] = EMPTY;
+            pos.color[7] = EMPTY;
+
+            pos.piece[m.to + 1] = ROOK;
+            pos.color[m.to + 1] = BLACK;
+
+        }else if(m.from == 60 && m.to == 58) {
+            // rook becomes on square 59 and king on square 58
+
+            pos.piece[56] = EMPTY;
+            pos.color[56] = EMPTY;
+
+            pos.piece[m.to - 1] = ROOK;
+            pos.color[m.to - 1] = WHITE;
+
+        }else if(m.from == 60 && m.to == 62) {
+            // rook becomes on square 61 and king on square 62
+
+            pos.piece[63] = EMPTY;
+            pos.color[63] = EMPTY;
+
+            pos.piece[m.to - 1] = ROOK;
+            pos.color[m.to - 1] = WHITE;
+
+        }
+
+    }
+
+    pos.piece[m.to] = movingPiece;
+    pos.color[m.to] = movingColor;
+
+    // en passant logic
+
+    if(originalMovingPiece == PAWN && abs(m.from - m.to) == 16) {
+        pos.enPassantSquare = (m.from + m.to) / 2;
     }
 
     // pos.halfMoveClock here
+
+    if(originalMovingPiece == PAWN) {
+        pos.halfmoveClock = 0;
+    }else {
+        pos.halfmoveClock++;
+    }
+
+    if(m.flags & CAPTURE) {
+        pos.halfmoveClock = 0;
+    }
 
     if(pos.sideToMove == BLACK) {
         pos.fullmoveNumber++;
     }
 
-    pos.sideToMove = !pos.sideToMove; // switch sides
+    pos.sideToMove = !pos.sideToMove; // switch sides when white makes a move
 
 }
 
