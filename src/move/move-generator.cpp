@@ -1,4 +1,5 @@
 #include "move-generator.h"
+#include <utility>
 
 void makeMove(Position& pos, const Move& m, UndoState& undo) {
 
@@ -720,6 +721,54 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
             }
         }
         
+    }
+
+    return v;
+}
+
+std::vector<Move> MoveGenerator::generateKnightMoves(Position& pos, int square) {
+    std::vector<Move> v;
+    int row = square / 8;
+    int col = square % 8;
+    
+
+    std::vector<std::pair<int, int > > arr;
+    int newRow;
+    int newCol;
+
+    arr.push_back(std::make_pair(2, 1));
+    arr.push_back(std::make_pair(2, -1));
+    arr.push_back(std::make_pair(-2, 1));
+    arr.push_back(std::make_pair(-2, -1));
+    arr.push_back(std::make_pair(1, 2));
+    arr.push_back(std::make_pair(1, -2));
+    arr.push_back(std::make_pair(-1, 2));
+    arr.push_back(std::make_pair(-1, -2));
+
+    for(auto &[first, second]: arr) {
+
+        newRow = row + first;
+        newCol = col + second;
+        
+        if((0 <= newRow && newRow <= 7) && (0 <= newCol && newCol <= 7)) {
+
+            int destination = newRow * 8 + newCol;
+    
+            if(pos.piece[destination] == EMPTY && pos.color[destination] != pos.sideToMove) {
+                Move m;
+                m.from = square;
+                m.to = destination;
+                v.push_back(m);
+            } else if(pos.piece[destination] != EMPTY && pos.color[destination] != pos.sideToMove) {
+                Move m;
+                m.from = square;
+                m.to = destination;
+                m.flags = CAPTURE;
+                v.push_back(m);
+            }
+    
+        }
+
     }
 
     return v;

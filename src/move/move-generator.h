@@ -3,6 +3,7 @@
 #include <vector>
 #include "move-representation.h"
 #include <cmath>
+#include <utility>
 
 class MoveGenerator {
     public: 
