@@ -2,7 +2,7 @@
 
 No AI was used for generating the code.
 
-## Development
+## Documentation
 
 [Chess Programming Wiki](https://www.chessprogramming.org/)
 
