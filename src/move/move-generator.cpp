@@ -727,52 +727,99 @@ std::vector<Move> MoveGenerator::generatePawnMoves(Position& pos, int square) {
 }
 
 std::vector<Move> MoveGenerator::generateKnightMoves(Position& pos, int square) {
-    std::vector<Move> v;
-    int row = square / 8;
-    int col = square % 8;
-    
 
-    std::vector<std::pair<int, int > > arr;
+    // Vector that will store every legal knight move found.
+    std::vector<Move> v;
+
+    // Convert the 0-63 board index into its row.
+    // Example: square 18 -> row 2.
+    int row = square / 8;
+
+    // Convert the 0-63 board index into its column/file.
+    // Example: square 18 -> column 2.
+    int col = square % 8;
+
+    // Stores the 8 possible knight movement patterns.
+    // Each pair represents:
+    // (change in row, change in column)
+    std::vector<std::pair<int, int> > arr;
+
+    // Variables that will hold the destination row and column.
     int newRow;
     int newCol;
 
+    // Knight movement: 2 rows, 1 column.
     arr.push_back(std::make_pair(2, 1));
+
+    // Knight movement: 2 rows, -1 column.
     arr.push_back(std::make_pair(2, -1));
+
+    // Knight movement: -2 rows, 1 column.
     arr.push_back(std::make_pair(-2, 1));
+
+    // Knight movement: -2 rows, -1 column.
     arr.push_back(std::make_pair(-2, -1));
+
+    // Knight movement: 1 row, 2 columns.
     arr.push_back(std::make_pair(1, 2));
+
+    // Knight movement: 1 row, -2 columns.
     arr.push_back(std::make_pair(1, -2));
+
+    // Knight movement: -1 row, 2 columns.
     arr.push_back(std::make_pair(-1, 2));
+
+    // Knight movement: -1 row, -2 columns.
     arr.push_back(std::make_pair(-1, -2));
 
+    // Check each of the 8 possible knight movements.
     for(auto &[first, second]: arr) {
 
+        // Apply the row movement to the knight's current row.
         newRow = row + first;
+
+        // Apply the column movement to the knight's current column.
         newCol = col + second;
-        
+
+        // Make sure the destination is still inside the 8x8 board.
         if((0 <= newRow && newRow <= 7) && (0 <= newCol && newCol <= 7)) {
 
+            // Convert the destination row and column back into
+            // the 0-63 square index used by the board.
             int destination = newRow * 8 + newCol;
-    
+
+            // If the destination is empty, the knight can move there.
             if(pos.piece[destination] == EMPTY && pos.color[destination] != pos.sideToMove) {
+
+                // Create a normal (non-capturing) move.
                 Move m;
+
+                // Store the knight's starting square.
                 m.from = square;
+
+                // Store the knight's destination square.
                 m.to = destination;
+
+                // Add the move to the list of generated moves.
                 v.push_back(m);
+
             } else if(pos.piece[destination] != EMPTY && pos.color[destination] != pos.sideToMove) {
+                // If the destination contains an enemy piece,the knight can capture it.
                 Move m;
                 m.from = square;
                 m.to = destination;
                 m.flags = CAPTURE;
                 v.push_back(m);
             }
-    
         }
-
     }
 
+    // Return all generated knight moves.
     return v;
 }
+
+
+
 
 std::vector<Move> MoveGenerator::generateMoves(Position& pos) {
 
