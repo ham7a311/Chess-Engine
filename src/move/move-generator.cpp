@@ -836,8 +836,8 @@ std::vector<Move> MoveGenerator::generateBishopMoves(Position& pos, int square) 
         newRow = row + first;
         newCol = col + second;
 
-        int destination = newRow * 8 + newCol;
         while ((0 <= newRow && newRow <= 7) && (0 <= newCol && newCol <= 7)) {
+                int destination = newRow * 8 + newCol;
             
                 if (pos.piece[destination] == EMPTY) {
             
