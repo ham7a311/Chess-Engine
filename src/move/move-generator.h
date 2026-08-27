@@ -10,6 +10,7 @@ class MoveGenerator {
         std::vector<Move> generateMoves(Position&);
         void makeMove(Position& pos, const Move& m, UndoState& undo);
         void unmakeMove(Position& pos, const Move& m, UndoState& undo);  // this is for the engine
+        bool isLegalMove(Position& pos, Move& m, UndoState& undo);
     private:
         std::vector<Move> generatePawnMoves(Position&, int square);
         std::vector<Move> generateKnightMoves(Position&, int square);

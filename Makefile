@@ -9,7 +9,7 @@ CXXFLAGS += -I $(SFML_PREFIX)/include
 LDFLAGS  += -L $(SFML_PREFIX)/lib
 endif
 
-SRC := src/main.cpp src/Chess/chessBoard.cpp
+SRC := src/main.cpp src/Chess/chessBoard.cpp src/move/move-generator.cpp
 BIN := chess
 
 .PHONY: all run clean

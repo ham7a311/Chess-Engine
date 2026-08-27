@@ -20,6 +20,22 @@ int main() {
 
             if (event->is<sf::Event::Closed>())
                 window.close();
+
+            if (const auto* pressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+                if (pressed->button == sf::Mouse::Button::Left) {
+                    board.onMousePressed(pos, window.mapPixelToCoords(pressed->position));
+                }
+            }
+
+            if (const auto* released = event->getIf<sf::Event::MouseButtonReleased>()) {
+                if (released->button == sf::Mouse::Button::Left) {
+                    board.onMouseReleased(pos, window.mapPixelToCoords(released->position));
+                }
+            }
+
+            if (const auto* moved = event->getIf<sf::Event::MouseMoved>()) {
+                board.onMouseMoved(window.mapPixelToCoords(moved->position));
+            }
         }
 
         window.clear();

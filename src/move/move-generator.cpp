@@ -1,7 +1,7 @@
 #include "move-generator.h"
 #include <utility>
 
-void makeMove(Position& pos, const Move& m, UndoState& undo) {
+void MoveGenerator::makeMove(Position& pos, const Move& m, UndoState& undo) {
 
     int movingPiece = pos.piece[m.from];
     int movingColor = pos.color[m.from];
@@ -227,7 +227,7 @@ void makeMove(Position& pos, const Move& m, UndoState& undo) {
 
 
 
-void unmakeMove(Position& pos, const Move& m, UndoState& undo) {
+void MoveGenerator::unmakeMove(Position& pos, const Move& m, UndoState& undo) {
     // Reverse makeMove() logic
 
     pos.sideToMove = !pos.sideToMove;
@@ -803,7 +803,7 @@ std::vector<Move> MoveGenerator::generateKnightMoves(Position& pos, int square) 
                 // Add the move to the list of generated moves.
                 v.push_back(m);
 
-            } else if(pos.piece[destination] != EMPTY) {
+            } else if (pos.color[destination] != pos.sideToMove) {
                 // If the destination contains an enemy piece,the knight can capture it.
                 Move m;
                 m.from = square;
@@ -1398,8 +1398,7 @@ bool MoveGenerator::isKingInCheck(Position& pos, int kingColor) {
 
     for (int square = 0; square < 64; square++) {
 
-        if (pos.piece[square] == KING &&
-            pos.color[square] == kingColor) {
+        if (pos.piece[square] == KING && pos.color[square] == kingColor) {
 
             // The opponent is the attacking color.
 
@@ -1409,7 +1408,19 @@ bool MoveGenerator::isKingInCheck(Position& pos, int kingColor) {
         }
     }
 
-    return false;
+    // Own king is missing (for example after capturing it). Treat as illegal.
+    return true;
+}
+
+
+bool MoveGenerator::isLegalMove(Position& pos, Move& m, UndoState& undo) {
+    int movingColor = pos.sideToMove;
+
+    makeMove(pos, m, undo);
+    bool legal = !isKingInCheck(pos, movingColor);
+    unmakeMove(pos, m, undo);
+
+    return legal;
 }
 
 
