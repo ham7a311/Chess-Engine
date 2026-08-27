@@ -1157,6 +1157,242 @@ std::vector<Move> MoveGenerator::generateKingMoves(Position& pos, int square) {
     return v;
 }
 
+bool MoveGenerator::isSquareAttacked(Position& pos, int square, int attackingColor) {
+
+    int row = square / 8;
+    int col = square % 8;
+
+    // --------------------------------------------------
+    // Pawn attacks
+    // --------------------------------------------------
+
+    if (attackingColor == WHITE) {
+
+        // White pawns attack one row above them.
+
+        int pawnRow = row + 1;
+
+        if (pawnRow <= 7) {
+
+            // White pawn attacking from the left.
+
+            if (col > 0) {
+
+                int pawnSquare = pawnRow * 8 + (col - 1);
+
+                if (pos.piece[pawnSquare] == PAWN && pos.color[pawnSquare] == WHITE) {
+
+                    return true;
+                }
+            }
+
+            // White pawn attacking from the right.
+
+            if (col < 7) {
+
+                int pawnSquare = pawnRow * 8 + (col + 1);
+
+                if (pos.piece[pawnSquare] == PAWN &&
+                    pos.color[pawnSquare] == WHITE) {
+
+                    return true;
+                }
+            }
+        }
+
+    } else {
+
+        // Black pawns attack one row below them.
+
+        int pawnRow = row - 1;
+
+        if (pawnRow >= 0) {
+
+            // Black pawn attacking from the left.
+
+            if (col > 0) {
+
+                int pawnSquare = pawnRow * 8 + (col - 1);
+
+                if (pos.piece[pawnSquare] == PAWN &&
+                    pos.color[pawnSquare] == BLACK) {
+
+                    return true;
+                }
+            }
+
+            // Black pawn attacking from the right.
+
+            if (col < 7) {
+
+                int pawnSquare = pawnRow * 8 + (col + 1);
+
+                if (pos.piece[pawnSquare] == PAWN && pos.color[pawnSquare] == BLACK) {
+
+                    return true;
+                }
+            }
+        }
+    }
+
+    // --------------------------------------------------
+    // Knight attacks
+    // --------------------------------------------------
+
+    std::vector<std::pair<int, int> > knightOffsets;
+
+    knightOffsets.push_back(std::make_pair(2, 1));
+    knightOffsets.push_back(std::make_pair(2, -1));
+    knightOffsets.push_back(std::make_pair(-2, 1));
+    knightOffsets.push_back(std::make_pair(-2, -1));
+    knightOffsets.push_back(std::make_pair(1, 2));
+    knightOffsets.push_back(std::make_pair(1, -2));
+    knightOffsets.push_back(std::make_pair(-1, 2));
+    knightOffsets.push_back(std::make_pair(-1, -2));
+
+    for(auto &[first, second] : knightOffsets) {
+
+        int newRow = row + first;
+        int newCol = col + second;
+
+        if(0 <= newRow && newRow <= 7 && 0 <= newCol && newCol <= 7) {
+
+            int attackerSquare = newRow * 8 + newCol;
+
+            if(pos.piece[attackerSquare] == KNIGHT && pos.color[attackerSquare] == attackingColor) {
+
+                return true;
+            }
+        }
+    }
+
+    // --------------------------------------------------
+    // Bishop / Queen diagonal attacks
+    // --------------------------------------------------
+
+    std::vector<std::pair<int, int> > bishopOffsets;
+
+    bishopOffsets.push_back(std::make_pair(1, 1));
+    bishopOffsets.push_back(std::make_pair(1, -1));
+    bishopOffsets.push_back(std::make_pair(-1, 1));
+    bishopOffsets.push_back(std::make_pair(-1, -1));
+
+    for(auto &[first, second] : bishopOffsets) {
+
+        int newRow = row + first;
+        int newCol = col + second;
+
+        while(0 <= newRow && newRow <= 7 && 0 <= newCol && newCol <= 7) {
+
+            int attackerSquare = newRow * 8 + newCol;
+
+            // Empty square means the diagonal is still open.
+
+            if(pos.piece[attackerSquare] == EMPTY) {
+
+                newRow += first;
+                newCol += second;
+
+                continue;
+            }
+
+            // A bishop or queen of the attacking color
+            // attacks the target square.
+
+            if(pos.color[attackerSquare] == attackingColor && (pos.piece[attackerSquare] == BISHOP || pos.piece[attackerSquare] == QUEEN)) {
+
+                return true;
+            }
+
+            // Any piece blocks the diagonal.
+
+            break;
+        }
+    }
+
+    // --------------------------------------------------
+    // Rook / Queen straight-line attacks
+    // --------------------------------------------------
+
+    std::vector<std::pair<int, int> > rookOffsets;
+
+    rookOffsets.push_back(std::make_pair(1, 0));
+    rookOffsets.push_back(std::make_pair(-1, 0));
+    rookOffsets.push_back(std::make_pair(0, 1));
+    rookOffsets.push_back(std::make_pair(0, -1));
+
+    for(auto &[first, second] : rookOffsets) {
+
+        int newRow = row + first;
+        int newCol = col + second;
+
+        while(0 <= newRow && newRow <= 7 && 0 <= newCol && newCol <= 7) {
+
+            int attackerSquare = newRow * 8 + newCol;
+
+            // Empty square means the line is still open.
+
+            if(pos.piece[attackerSquare] == EMPTY) {
+
+                newRow += first;
+                newCol += second;
+
+                continue;
+            }
+
+            // A rook or queen of the attacking color
+            // attacks the target square.
+
+            if(pos.color[attackerSquare] == attackingColor && (pos.piece[attackerSquare] == ROOK || pos.piece[attackerSquare] == QUEEN)) {
+                return true;
+            }
+
+            // Any piece blocks the line.
+
+            break;
+        }
+    }
+
+    // --------------------------------------------------
+    // King attacks
+    // --------------------------------------------------
+
+    std::vector<std::pair<int, int> > kingOffsets;
+
+    kingOffsets.push_back(std::make_pair(1, 0));
+    kingOffsets.push_back(std::make_pair(-1, 0));
+    kingOffsets.push_back(std::make_pair(0, 1));
+    kingOffsets.push_back(std::make_pair(0, -1));
+    kingOffsets.push_back(std::make_pair(1, 1));
+    kingOffsets.push_back(std::make_pair(1, -1));
+    kingOffsets.push_back(std::make_pair(-1, 1));
+    kingOffsets.push_back(std::make_pair(-1, -1));
+
+    for(auto &[first, second] : kingOffsets) {
+
+        int newRow = row + first;
+        int newCol = col + second;
+
+        if(0 <= newRow && newRow <= 7 && 0 <= newCol && newCol <= 7) {
+
+            int attackerSquare = newRow * 8 + newCol;
+
+            if(pos.piece[attackerSquare] == KING &&
+               pos.color[attackerSquare] == attackingColor) {
+
+                return true;
+            }
+        }
+    }
+
+    // --------------------------------------------------
+    // No attacking piece was found.
+    // --------------------------------------------------
+
+    return false;
+}
+
+
 std::vector<Move> MoveGenerator::generateMoves(Position& pos) {
 
     
