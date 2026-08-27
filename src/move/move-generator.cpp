@@ -1017,6 +1017,146 @@ std::vector<Move> MoveGenerator::generateQueenMoves(Position& pos, int square) {
 }
 
 
+std::vector<Move> MoveGenerator::generateKingMoves(Position& pos, int square) {
+
+    std::vector<Move> v;
+
+    // Convert the square index into row and column.
+    int row = square / 8;
+    int col = square % 8;
+
+    // The 8 directions the king can move.
+    std::vector<std::pair<int, int> > arr;
+
+    arr.push_back(std::make_pair(1, 0));
+    arr.push_back(std::make_pair(-1, 0));
+    arr.push_back(std::make_pair(0, 1));
+    arr.push_back(std::make_pair(0, -1));
+
+    arr.push_back(std::make_pair(1, 1));
+    arr.push_back(std::make_pair(1, -1));
+    arr.push_back(std::make_pair(-1, 1));
+    arr.push_back(std::make_pair(-1, -1));
+
+    // Check every possible direction.
+    for (auto &[first, second] : arr) {
+
+        int newRow = row + first;
+        int newCol = col + second;
+
+        // Make sure the destination is inside the board.
+        if (0 <= newRow && newRow <= 7 &&
+            0 <= newCol && newCol <= 7) {
+
+            int destination = newRow * 8 + newCol;
+
+            // Empty square: normal move.
+            if (pos.piece[destination] == EMPTY) {
+
+                Move m;
+
+                m.from = square;
+                m.to = destination;
+
+                v.push_back(m);
+            }
+
+            // Enemy piece: capture.
+            else if (pos.color[destination] != pos.sideToMove) {
+
+                Move m;
+
+                m.from = square;
+                m.to = destination;
+                m.flags = CAPTURE;
+
+                v.push_back(m);
+            }
+        }
+    }
+
+        // --------------------------------------------------
+    // Castling moves
+    // --------------------------------------------------
+
+    if (pos.sideToMove == WHITE) {
+
+        // White kingside castling: e1 -> g1
+        if ((pos.castlingRights & WHITE_KINGSIDE) &&
+            square == 60 &&
+            pos.piece[63] == ROOK &&
+            pos.color[63] == WHITE &&
+            pos.piece[61] == EMPTY &&
+            pos.piece[62] == EMPTY) {
+
+            Move m;
+
+            m.from = square;
+            m.to = 62;
+            m.flags = CASTLING;
+
+            v.push_back(m);
+        }
+
+        // White queenside castling: e1 -> c1
+        if ((pos.castlingRights & WHITE_QUEENSIDE) &&
+            square == 60 &&
+            pos.piece[56] == ROOK &&
+            pos.color[56] == WHITE &&
+            pos.piece[57] == EMPTY &&
+            pos.piece[58] == EMPTY &&
+            pos.piece[59] == EMPTY) {
+
+            Move m;
+
+            m.from = square;
+            m.to = 58;
+            m.flags = CASTLING;
+
+            v.push_back(m);
+        }
+
+    } else {
+
+        // Black kingside castling: e8 -> g8
+        if ((pos.castlingRights & BLACK_KINGSIDE) &&
+            square == 4 &&
+            pos.piece[7] == ROOK &&
+            pos.color[7] == BLACK &&
+            pos.piece[5] == EMPTY &&
+            pos.piece[6] == EMPTY) {
+
+            Move m;
+
+            m.from = square;
+            m.to = 6;
+            m.flags = CASTLING;
+
+            v.push_back(m);
+        }
+
+        // Black queenside castling: e8 -> c8
+        if ((pos.castlingRights & BLACK_QUEENSIDE) &&
+            square == 4 &&
+            pos.piece[0] == ROOK &&
+            pos.color[0] == BLACK &&
+            pos.piece[1] == EMPTY &&
+            pos.piece[2] == EMPTY &&
+            pos.piece[3] == EMPTY) {
+
+            Move m;
+
+            m.from = square;
+            m.to = 2;
+            m.flags = CASTLING;
+
+            v.push_back(m);
+        }
+    }
+
+    return v;
+}
+
 std::vector<Move> MoveGenerator::generateMoves(Position& pos) {
 
     
