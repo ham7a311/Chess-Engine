@@ -18,4 +18,5 @@ class MoveGenerator {
         std::vector<Move> generateQueenMoves(Position&, int square);
         std::vector<Move> generateKingMoves(Position&, int square);
         bool isSquareAttacked(Position& pos, int square, int attackingColor);
+        bool isKingInCheck(Position& pos, int kingColor);
 };

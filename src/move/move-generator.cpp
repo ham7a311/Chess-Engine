@@ -1392,6 +1392,26 @@ bool MoveGenerator::isSquareAttacked(Position& pos, int square, int attackingCol
     return false;
 }
 
+bool MoveGenerator::isKingInCheck(Position& pos, int kingColor) {
+
+    // Find the king belonging to kingColor.
+
+    for (int square = 0; square < 64; square++) {
+
+        if (pos.piece[square] == KING &&
+            pos.color[square] == kingColor) {
+
+            // The opponent is the attacking color.
+
+            int attackingColor = !kingColor;
+
+            return isSquareAttacked(pos, square, attackingColor);
+        }
+    }
+
+    return false;
+}
+
 
 std::vector<Move> MoveGenerator::generateMoves(Position& pos) {
 
